@@ -19,9 +19,21 @@ React hooks, TypeScript, компонент задлах дадлага хийх
 
 ### 2. Өөрийн Fork-г клон хийх
 
+#### Арга 1: VSCode ашиглах
+
+1. VSCode нээх
+2. `Ctrl+Shift+P` (Mac: `Cmd+Shift+P`) дарж Command Palette нээх
+3. `Git: Clone` гэж бичээд сонгох
+4. `https://github.com/<ӨӨРИЙН_GITHUB_НЭРЭЭ>/ecommerce.git` хаягийг оруулах
+5. Хадгалах фолдероо сонгох
+6. "Open" дарж проектоо нээх
+
+#### Арга 2: Terminal ашиглах
+
 ```bash
 git clone https://github.com/<ӨӨРИЙН_GITHUB_НЭРЭЭ>/ecommerce.git
 cd ecommerce
+code .
 ```
 
 ### 3. Dependency суулгах
@@ -43,6 +55,16 @@ npm run dev
 `TODO.md` файлыг нээж даалгавруудыг дарааллаар нь хийнэ. Бүх код `app/page.tsx` файл дотор.
 
 ### 6. Ажлаа хадгалах
+
+#### VSCode-оос:
+
+1. Зүүн талын **Source Control** (Ctrl+Shift+G) таб нээх
+2. Өөрчлөгдсөн файлуудын хажууд байгаа **+** дарж stage хийх
+3. Дээрх message хэсэгт `completed product store exercise` гэж бичих
+4. **Commit** товч дарах
+5. **Sync Changes** дарж push хийх
+
+#### Terminal-аас:
 
 ```bash
 git add .
