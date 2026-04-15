@@ -46,7 +46,7 @@ export const Header = ({
                   onClick={() => {
                     handleCatChange(cat.category);
                   }}
-                  className={`cursor-pointer rounded-full bg-zinc-900 px-4 py-1.5 text-sm font-medium ${currentCategory === cat.category ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"}`}
+                  className={`cursor-pointer rounded-full px-4 py-1.5 text-sm font-medium ${currentCategory === cat.category ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900" : "transition-colors text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"}`}
                 >
                   {cat.label}
                 </button>
