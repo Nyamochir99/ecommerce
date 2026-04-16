@@ -50,4 +50,8 @@ const parseWeather = (raw) => {
   };
 };
 
-module.exports = parseWeather;
+module.exports = { parseWeather, getWeatherData };
+
+console.log(parseWeather);
+
+aaaa;
