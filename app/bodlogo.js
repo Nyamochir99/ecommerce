@@ -23,12 +23,34 @@ const parseWeather = (raw) => {
     return parseFloat(num);
   };
 
-  const forecastDays = (raw.forecast?.forecastDay).slice(0, 3).map((day) => ({
+  const forecastDays = (raw.forecast?.forecastday).slice(0, 3).map((day) => ({
     date: day.date,
     min: onlyNumber(day.day?.mintemp_c),
     max: onlyNumber(day.day?.maxtemp_c),
     condition: day.day?.condition?.text,
   }));
+
+  const todayHours = raw.forecast?.forecastday[0].hour;
+
+  const last = todayHours.reduce(
+    (acc, hour) => {
+      const hourTemp = hour.temp_c === null ? hour.feelslike_c : hour.temp_c;
+      const hourWind = onlyNumber(hour.wind_kph);
+
+      acc.totalTemp += onlyNumber(hourTemp);
+      if (hourWind > acc.maxWind) acc.maxWind = hourWind;
+      acc.precipTotal += onlyNumber(hour.precip_mm);
+      return acc;
+    },
+    { totalTemp: 0, maxWind: 0, precipTotal: 0 },
+  );
+
+  const hoursAnalyst = {
+    date: raw.forecast?.forecastday[0]?.date,
+    avgTemp: Number((last.totalTemp / todayHours.length).toFixed(1)),
+    maxWind: last.maxWind,
+    precipTotal: last.precipTotal.toFixed(1),
+  };
 
   return {
     city: raw.location?.name,
@@ -47,11 +69,13 @@ const parseWeather = (raw) => {
       },
     },
     forecastDays: forecastDays,
+    hoursAnalys: hoursAnalyst,
   };
 };
 
 module.exports = { parseWeather, getWeatherData };
 
-console.log(parseWeather);
-
-aaaa;
+getWeatherData().then((data) => {
+  const result = parseWeather(data);
+  console.log(result);
+});

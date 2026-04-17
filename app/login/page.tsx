@@ -5,6 +5,7 @@
 // TODO 2: useRouter импортлох (next/navigation)
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 // TODO 3: LoginResponse төрөл зарлах
 // API: https://dummyjson.com/auth/login
@@ -16,6 +17,24 @@ export default function LoginPage() {
   // TODO 4: useRouter hook ашиглах
 
   // TODO 5: State хувьсагчдыг зарлах
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://dummyjson.com/user/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: "emilys",
+        password: "emilyspass",
+        expiresInMins: 30, // optional, defaults to 60
+      }),
+    })
+      .then((res) => res.json())
+      .then(console.log);
+  }, []);
   // username - нэвтрэх нэр, эхлэх утга: ""
   // password - нууц үг, эхлэх утга: ""
   // error    - алдааны мессеж, эхлэх утга: ""

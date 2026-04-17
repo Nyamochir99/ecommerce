@@ -38,7 +38,6 @@ export default function Home() {
     } else if (filter !== "all") {
       url = `https://dummyjson.com/products/category/${filter}?limit=${PRODUCTS_PER_PAGE}&skip=${skip}`;
     }
-    setLoading(true);
     fetch(url)
       .then((res) => {
         return res.json();
