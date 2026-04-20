@@ -1,4 +1,6 @@
-import React from "react";
+import { useContext } from "react";
+import { UserContext } from "../providers/user-provider";
+import Link from "next/link";
 
 const Categories = [
   { label: "All", category: "all" },
@@ -21,16 +23,29 @@ export const Header = ({
   currentCategory: string;
   handleCatChange: (cat: string) => void;
 }) => {
+  const { user, setUser } = useContext(UserContext);
   return (
-    <>
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto max-w-7xl px-6 py-6">
+    <div className="bg-white dark:bg-zinc-900">
+      <header className="max-w-7xl mx-auto border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 flex justify-between items-center">
+        <div className="max-w-7xl px-6 py-6">
           <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
             Product Store
           </h1>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             Browse our collection of products
           </p>
+        </div>
+        <div>
+          {!user ? (
+            <Link
+              href={"/login"}
+              className="mr-6 w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              Нэвтрэх
+            </Link>
+          ) : (
+            <div className="pr-6">Hi {user.username}</div>
+          )}
         </div>
       </header>
 
@@ -55,6 +70,6 @@ export const Header = ({
           </ul>
         </div>
       </nav>
-    </>
+    </div>
   );
 };

@@ -45,13 +45,13 @@ export type ProductApiResponse = {
   limit: number;
 };
 
-type User = {
+export type User = {
   id: number;
   username: string;
   email: string;
   firstName: string;
   lastName: string;
-  gender: "male" | "female" | string;
+  gender: string;
   image: string;
   accessToken: string;
   refreshToken: string;

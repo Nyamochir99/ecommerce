@@ -5,7 +5,9 @@
 // TODO 2: useRouter импортлох (next/navigation)
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../providers/user-provider";
+import { useRouter } from "next/navigation";
 
 // TODO 3: LoginResponse төрөл зарлах
 // API: https://dummyjson.com/auth/login
@@ -15,32 +17,39 @@ import { useEffect, useState } from "react";
 
 export default function LoginPage() {
   // TODO 4: useRouter hook ашиглах
+  const router = useRouter();
 
   // TODO 5: State хувьсагчдыг зарлах
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { user, setUser } = useContext(UserContext);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch("https://dummyjson.com/user/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: "emilys",
-        password: "emilyspass",
-        expiresInMins: 30, // optional, defaults to 60
-      }),
-    })
-      .then((res) => res.json())
-      .then(console.log);
-  }, []);
+    if (user) {
+      router.push("/");
+    }
+  }, [user]);
   // username - нэвтрэх нэр, эхлэх утга: ""
   // password - нууц үг, эхлэх утга: ""
   // error    - алдааны мессеж, эхлэх утга: ""
   // loading  - ачааллын төлөв, эхлэх утга: false
 
   // TODO 6: handleSubmit функц бичих
+  const handleSubmit = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    fetch("https://dummyjson.com/user/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setUser(data);
+      });
+    setLoading(true);
+  };
   // 1. e.preventDefault() дуудах
   // 2. error хоослох, loading true болгох
   // 3. fetch("https://dummyjson.com/auth/login") POST хүсэлт илгээх
@@ -77,63 +86,84 @@ export default function LoginPage() {
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-6 py-10">
         <div className="mx-auto max-w-sm">
-          {/* TODO 7: form-д onSubmit={handleSubmit} холбох */}
-          <form className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <h2 className="mb-6 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-              Нэвтрэх
-            </h2>
-
-            {/* TODO 8: error утгатай үед алдааны мессеж харуулах */}
-
-            {/* Username талбар */}
-            <div className="mb-4">
-              <label
-                htmlFor="username"
-                className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-              >
-                Нэвтрэх нэр
-              </label>
-              {/* TODO 9: value={username} onChange холбох */}
-              <input
-                id="username"
-                type="text"
-                required
-                placeholder="emilys"
-                className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-400 shadow-sm outline-none transition-colors focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-800"
-              />
-            </div>
-
-            {/* Password талбар */}
-            <div className="mb-6">
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-              >
-                Нууц үг
-              </label>
-              {/* TODO 10: value={password} onChange холбох */}
-              <input
-                id="password"
-                type="password"
-                required
-                placeholder="emilyspass"
-                className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-400 shadow-sm outline-none transition-colors focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-800"
-              />
-            </div>
-
-            {/* TODO 11: disabled={loading} нэмэх, loading үед "Нэвтэрч байна..." текст харуулах */}
-            <button
-              type="submit"
-              className="w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          {!user ? (
+            <form
+              className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+              onSubmit={handleSubmit}
             >
-              Нэвтрэх
-            </button>
+              <h2 className="mb-6 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                Нэвтрэх
+              </h2>
 
-            <p className="mt-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
-              Туршилт: <span className="font-mono">emilys</span> /{" "}
-              <span className="font-mono">emilyspass</span>
-            </p>
-          </form>
+              {/* TODO 8: error утгатай үед алдааны мессеж харуулах */}
+
+              {/* Username талбар */}
+              <div className="mb-4">
+                <label
+                  htmlFor="username"
+                  className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Нэвтрэх нэр
+                </label>
+                {/* TODO 9: value={username} onChange холбох */}
+                <input
+                  value={username}
+                  onChange={(e) => {
+                    setUsername(e.target.value);
+                  }}
+                  id="username"
+                  type="text"
+                  required
+                  placeholder="emilys"
+                  className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-400 shadow-sm outline-none transition-colors focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-800"
+                />
+              </div>
+
+              {/* Password талбар */}
+              <div className="mb-6">
+                <label
+                  htmlFor="password"
+                  className="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Нууц үг
+                </label>
+                {/* TODO 10: value={password} onChange холбох */}
+                <input
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  id="password"
+                  type="password"
+                  required
+                  placeholder="emilyspass"
+                  className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 placeholder-zinc-400 shadow-sm outline-none transition-colors focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder-zinc-500 dark:focus:border-zinc-500 dark:focus:ring-zinc-800"
+                />
+              </div>
+
+              {/* TODO 11: disabled={loading} нэмэх, loading үед "Нэвтэрч байна..." текст харуулах */}
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-zinc-300 border-t-zinc-900" />
+                  </div>
+                ) : (
+                  <span>Нэвтрэх</span>
+                )}
+              </button>
+
+              <p className="mt-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+                Туршилт: <span className="font-mono">emilys</span> /{" "}
+                <span className="font-mono">emilyspass</span>
+              </p>
+            </form>
+          ) : (
+            <div></div>
+          )}
+          {/* TODO 7: form-д onSubmit={handleSubmit} холбох */}
 
           {/* TODO 12: Амжилттай нэвтэрсний дараа хэрэглэгчийн мэдээлэл харуулах */}
         </div>
